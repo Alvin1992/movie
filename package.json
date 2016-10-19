@@ -1,0 +1,12 @@
+{
+  "name": "movie",
+  "version": "1.0.0",
+  "description": "a movie project",
+  "main": "app.js",
+  "repository": {
+    "url": "https://github.com/Alvin1992/movie.git",
+    "type": "git"
+  },
+  "author": "Alvin1992 <fanrx_1992@163.com>",
+  "license": "MIT"
+}

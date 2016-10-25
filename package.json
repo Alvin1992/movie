@@ -8,5 +8,9 @@
     "type": "git"
   },
   "author": "Alvin1992 <fanrx_1992@163.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "express": "^4.14.0",
+    "webpack": "^1.13.2"
+  }
 }

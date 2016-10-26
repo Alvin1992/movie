@@ -10,7 +10,10 @@
   "author": "Alvin1992 <fanrx_1992@163.com>",
   "license": "MIT",
   "devDependencies": {
+    "css-loader": "^0.25.0",
     "express": "^4.14.0",
+    "node-sass": "^3.10.1",
+    "style-loader": "^0.13.1",
     "webpack": "^1.13.2"
   }
 }

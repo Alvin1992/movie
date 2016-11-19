@@ -1,0 +1,26 @@
+{
+  "name": "movie",
+  "description": "a movie project using nodejs and express",
+  "main": "app.js",
+  "authors": [
+    "Alvin"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "mongoose",
+    "node",
+    "express"
+  ],
+  "homepage": "https://github.com/Alvin1992/movie",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "boostrap#^3.3.7"
+  }
+}

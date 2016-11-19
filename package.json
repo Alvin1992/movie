@@ -1,20 +1,32 @@
 {
   "name": "movie",
   "version": "1.0.0",
-  "description": "a movie project",
+  "description": "a movie project using nodejs and express",
   "main": "app.js",
-  "repository": {
-    "url": "https://github.com/Alvin1992/movie.git",
-    "type": "git"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Alvin1992 <fanrx_1992@163.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alvin1992/movie.git"
+  },
+  "keywords": [
+    "mongoose",
+    "node",
+    "express"
+  ],
+  "author": "Alvin",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Alvin1992/movie/issues"
+  },
+  "homepage": "https://github.com/Alvin1992/movie#readme",
   "devDependencies": {
-    "css-loader": "^0.25.0",
+    "body-parser": "^1.15.2",
     "express": "^4.14.0",
-    "node-sass": "^3.11.2",
-    "style-loader": "^0.13.1",
-    "webpack": "^1.13.3",
-    "webpack-dev-server": "^1.16.2"
+    "jade": "^1.11.0",
+    "moment": "^2.16.0",
+    "mongoose": "^4.6.8",
+    "serve-static": "^1.11.1"
   }
 }

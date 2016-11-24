@@ -3,125 +3,71 @@
  */
 
 var express = require('express');
+// 引入body-parser和serve-static，在4+版本中中间件需要单独引入
 var bodyParser = require('body-parser');
 var serveStatic = require('serve-static');
+var mongoose = require('mongoose');
+var Movie = require('./models/movie');
+var _ = require('underscore');
 // Linux下在控制台使用PORT=4000 node app.js就会使用4000这个端口而不是3000
 // Windows下需要先设置端口set Port = 1234，然后node app.js
 var port = process.env.PORT || 3000;
 var app = express();
 
+// 连接mongodb
+mongoose.connect('mongodb://localhost/movie');
+
+// 视图路径
 app.set('views', './views/pages');
+// 模板引擎
 app.set('view engine', 'jade');
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(serveStatic('bower_components'));
+// 将表单的字段解析为json
+app.use(bodyParser.json({limit: '1mb'}));
+app.use(bodyParser.urlencoded({extended: true}));
+// 设置静态文件目录
+app.use(serveStatic('public'));
+// 设置一个全局的函数moment用于格式化日期
+app.locals.moment = require('moment');
+// 监听端口
 app.listen(port);
 
 console.log('movie is running at port ' + port);
 
 // 首页
 app.get('/', function (req, res) {
-    res.render('index', {
-        title: 'movie',
-        movies: [
-            {
-                title: '机械战警',
-                _id: 1,
-                poster: 'http://d.hiphotos.baidu.com/baike/crop%3D0%2C1%2C550%2C362%3Bc0%3Dbaike80%2C5%2C5%2C80%2C26' +
-                '/sign=84b51ba20f0828387c42865485a98530/f603918fa0ec08faf2f7a31a51ee3d6d54fbda9c.jpg'
-            },
-            {
-                title: '机械战警',
-                _id: 2,
-                poster: 'http://d.hiphotos.baidu.com/baike/crop%3D0%2C1%2C550%2C362%3Bc0%3Dbaike80%2C5%2C5%2C80%2C26' +
-                '/sign=84b51ba20f0828387c42865485a98530/f603918fa0ec08faf2f7a31a51ee3d6d54fbda9c.jpg'
-            },
-            {
-                title: '机械战警',
-                _id: 3,
-                poster: 'http://d.hiphotos.baidu.com/baike/crop%3D0%2C1%2C550%2C362%3Bc0%3Dbaike80%2C5%2C5%2C80%2C26' +
-                '/sign=84b51ba20f0828387c42865485a98530/f603918fa0ec08faf2f7a31a51ee3d6d54fbda9c.jpg'
-            },
-            {
-                title: '机械战警',
-                _id: 4,
-                poster: 'http://d.hiphotos.baidu.com/baike/crop%3D0%2C1%2C550%2C362%3Bc0%3Dbaike80%2C5%2C5%2C80%2C26' +
-                '/sign=84b51ba20f0828387c42865485a98530/f603918fa0ec08faf2f7a31a51ee3d6d54fbda9c.jpg'
-            },
-            {
-                title: '机械战警',
-                _id: 5,
-                poster: 'http://d.hiphotos.baidu.com/baike/crop%3D0%2C1%2C550%2C362%3Bc0%3Dbaike80%2C5%2C5%2C80%2C26' +
-                '/sign=84b51ba20f0828387c42865485a98530/f603918fa0ec08faf2f7a31a51ee3d6d54fbda9c.jpg'
-            },
-            {
-                title: '机械战警',
-                _id: 6,
-                poster: 'http://d.hiphotos.baidu.com/baike/crop%3D0%2C1%2C550%2C362%3Bc0%3Dbaike80%2C5%2C5%2C80%2C26' +
-                '/sign=84b51ba20f0828387c42865485a98530/f603918fa0ec08faf2f7a31a51ee3d6d54fbda9c.jpg'
-            }
-        ]
+    Movie.fetch(function (err, movies) {
+        if (err) {
+            console.log(err);
+        }
+
+        res.render('index', {
+            title: 'movie首页',
+            movies: movies
+        });
     });
 });
 
 app.get('/index', function (req, res) {
-    res.render('index', {
-        title: 'movie',
-        movies: [
-            {
-                title: '机械战警',
-                _id: 1,
-                poster: 'http://d.hiphotos.baidu.com/baike/crop%3D0%2C1%2C550%2C362%3Bc0%3Dbaike80%2C5%2C5%2C80%2C26' +
-                '/sign=84b51ba20f0828387c42865485a98530/f603918fa0ec08faf2f7a31a51ee3d6d54fbda9c.jpg'
-            },
-            {
-                title: '机械战警',
-                _id: 2,
-                poster: 'http://d.hiphotos.baidu.com/baike/crop%3D0%2C1%2C550%2C362%3Bc0%3Dbaike80%2C5%2C5%2C80%2C26' +
-                '/sign=84b51ba20f0828387c42865485a98530/f603918fa0ec08faf2f7a31a51ee3d6d54fbda9c.jpg'
-            },
-            {
-                title: '机械战警',
-                _id: 3,
-                poster: 'http://d.hiphotos.baidu.com/baike/crop%3D0%2C1%2C550%2C362%3Bc0%3Dbaike80%2C5%2C5%2C80%2C26' +
-                '/sign=84b51ba20f0828387c42865485a98530/f603918fa0ec08faf2f7a31a51ee3d6d54fbda9c.jpg'
-            },
-            {
-                title: '机械战警',
-                _id: 4,
-                poster: 'http://d.hiphotos.baidu.com/baike/crop%3D0%2C1%2C550%2C362%3Bc0%3Dbaike80%2C5%2C5%2C80%2C26' +
-                '/sign=84b51ba20f0828387c42865485a98530/f603918fa0ec08faf2f7a31a51ee3d6d54fbda9c.jpg'
-            },
-            {
-                title: '机械战警',
-                _id: 5,
-                poster: 'http://d.hiphotos.baidu.com/baike/crop%3D0%2C1%2C550%2C362%3Bc0%3Dbaike80%2C5%2C5%2C80%2C26' +
-                '/sign=84b51ba20f0828387c42865485a98530/f603918fa0ec08faf2f7a31a51ee3d6d54fbda9c.jpg'
-            },
-            {
-                title: '机械战警',
-                _id: 6,
-                poster: 'http://d.hiphotos.baidu.com/baike/crop%3D0%2C1%2C550%2C362%3Bc0%3Dbaike80%2C5%2C5%2C80%2C26' +
-                '/sign=84b51ba20f0828387c42865485a98530/f603918fa0ec08faf2f7a31a51ee3d6d54fbda9c.jpg'
-            }
-        ]
+    Movie.fetch(function (err, movies) {
+        if (err) {
+            console.log(err);
+        }
+
+        res.render('index', {
+            title: 'movie首页',
+            movies: movies
+        });
     });
 });
 
 // 详情页
 app.get('/movie/:id', function (req, res) {
-    res.render('detail', {
-        title: '详情',
-        movie: {
-            title: '机械战警',
-            director: '何塞·帕迪里亚',
-            country: '美国',
-            year: 2014,
-            language: '英语',
-            summary: '《新机械战警》是由何塞·帕迪里亚执导，乔尔·金纳曼、塞缪尔·杰克逊、加里·奥德曼等主演的一部科幻电影，' +
-            '改编自1987年保罗·范霍文执导的同名电影。影片于2014年2月12日在美国上映，2014年2月28日在中国大陆上映。' +
-            '影片的故事背景与原版基本相同，故事发生在2028年的底特律，男主角亚历克斯·墨菲是一名正直的警察，' +
-            '被坏人安装在车上的炸弹炸成重伤，为了救他，OmniCorp公司将他改造成了生化机器人“机器战警”，代表着美国司法的未来。'
-        }
+    var id = req.params.id;
+    Movie.findById(id, function (err, movie) {
+        res.render('detail', {
+            title: movie.title,
+            movie: movie
+        });
     });
 });
 
@@ -142,24 +88,86 @@ app.get('/admin/movie', function (req, res) {
     });
 });
 
+// 更新页
+app.get('/admin/update/:id', function (req, res) {
+    var id = req.params.id;
+    if (id) {
+        Movie.findById(id, function (err, movie) {
+            res.render('admin', {
+                title: 'movie后台更新页面',
+                movie: movie
+            });
+        });
+    }
+});
+
+// 后台录入的接口
+app.post('/admin/movie/new', function (req, res) {
+    var id = req.body.movie._id;
+    var movieObj = req.body.movie;
+    var _movie;
+    if (id !== "undefined") {
+        // 更新数据
+        Movie.findById(id, function (err, movie) {
+            if (err) {
+                console.log(err);
+            }
+
+            _movie = _.extend(movie, movieObj);
+            _movie.save(function (err, movie) {
+                if (err) {
+                    console.log(err);
+                }
+
+                res.redirect('/movie/' + movie.id);
+            });
+        });
+    } else {
+        _movie = new Movie({
+            director: movieObj.director,
+            title: movieObj.title,
+            country: movieObj.country,
+            language: movieObj.language,
+            year: movieObj.year,
+            poster: movieObj.poster,
+            summary: movieObj.summary,
+            flash: movieObj.flash
+        });
+
+        _movie.save(function (err, movie) {
+            if (err) {
+                console.log(err);
+            }
+
+            res.redirect('/movie/' + movie.id);
+        });
+    }
+});
+
 // 列表页
 app.get('/admin/list', function (req, res) {
-    res.render('list', {
-        title: '列表页',
-        movies: [
-            {
-                title: '机械战警',
-                _id: 1,
-                director: '何塞·帕迪里亚',
-                country: '美国',
-                year: 2014,
-                language: '英语',
-                flash: 'http://www.baidu.com',
-                summary: '《新机械战警》是由何塞·帕迪里亚执导，乔尔·金纳曼、塞缪尔·杰克逊、加里·奥德曼等主演的一部科幻电影，' +
-                '改编自1987年保罗·范霍文执导的同名电影。影片于2014年2月12日在美国上映，2014年2月28日在中国大陆上映。' +
-                '影片的故事背景与原版基本相同，故事发生在2028年的底特律，男主角亚历克斯·墨菲是一名正直的警察，' +
-                '被坏人安装在车上的炸弹炸成重伤，为了救他，OmniCorp公司将他改造成了生化机器人“机器战警”，代表着美国司法的未来。'
-            }
-        ]
+    Movie.fetch(function (err, movies) {
+        if (err) {
+            console.log(err);
+        }
+
+        res.render('list', {
+            title: 'movie列表页',
+            movies: movies
+        });
     });
+});
+
+// 删除接口
+app.delete('/admin/list', function (req, res) {
+    var id = req.query.id;
+    if (id) {
+        Movie.remove({_id: id}, function (err, movie) {
+            if (err) {
+                console.log(err);
+            } else {
+                res.json({success: 1});
+            }
+        })
+    }
 });

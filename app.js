@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var serveStatic = require('serve-static');
 var mongoose = require('mongoose');
 var Movie = require('./models/movie');
+var User = require('./models/user');
 var _ = require('underscore');
 // Linux下在控制台使用PORT=4000 node app.js就会使用4000这个端口而不是3000
 // Windows下需要先设置端口set Port = 1234，然后node app.js
@@ -56,6 +57,76 @@ app.get('/index', function (req, res) {
         res.render('index', {
             title: 'movie首页',
             movies: movies
+        });
+    });
+});
+
+// 注册
+app.post('/user/signup', function (req, res) {
+    var _user = req.body.user;
+
+    User.findOne({name: _user.name}, function (err, data) {
+        if (err) {
+            console.log(err);
+        }
+
+        if (data) {
+            return res.redirect('/');
+        } else {
+            var user = new User(_user);
+
+            // 暂时不做校验
+            user.save(function (err, user) {
+                if (err) {
+                    console.log(err);
+                }
+
+                res.redirect('/admin/userlist');
+            })
+        }
+    });
+});
+
+// 登录
+app.post('/user/signin', function (req, res) {
+    var _user = req.body.user;
+    var name = _user.name;
+    var pwd = _user.pwd;
+
+    User.findOne({name: name}, function (err, user) {
+        if (err) {
+            console.log(err);
+        }
+
+        if (!user) {
+            console.log('not exist');
+            return res.redirect('/');
+        }
+        user.comparePassword(pwd, function (err, isMatch) {
+            if (err) {
+                console.log(err);
+            }
+            console.log('isMatch', isMatch);
+            if (isMatch) {
+                console.log('Password is correct');
+                return res.redirect('/');
+            } else {
+                console.log('Password is incorrect');
+            }
+        });
+    });
+});
+
+// 用户列表页
+app.get('/admin/userlist', function (req, res) {
+    User.fetch(function (err, users) {
+        if (err) {
+            console.log(err);
+        }
+
+        res.render('userlist', {
+            title: '用户列表页',
+            users: users
         });
     });
 });
@@ -144,7 +215,7 @@ app.post('/admin/movie/new', function (req, res) {
     }
 });
 
-// 列表页
+// 电影列表页
 app.get('/admin/list', function (req, res) {
     Movie.fetch(function (err, movies) {
         if (err) {

@@ -6,6 +6,9 @@ var express = require('express');
 // 引入body-parser和serve-static，在4+版本中中间件需要单独引入
 var bodyParser = require('body-parser');
 var serveStatic = require('serve-static');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var mongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose');
 var Movie = require('./models/movie');
 var User = require('./models/user');
@@ -14,9 +17,10 @@ var _ = require('underscore');
 // Windows下需要先设置端口set Port = 1234，然后node app.js
 var port = process.env.PORT || 3000;
 var app = express();
+var dburl = 'mongodb://localhost/movie';
 
 // 连接mongodb
-mongoose.connect('mongodb://localhost/movie');
+mongoose.connect(dburl);
 
 // 视图路径
 app.set('views', './views/pages');
@@ -27,6 +31,17 @@ app.use(bodyParser.json({limit: '1mb'}));
 app.use(bodyParser.urlencoded({extended: true}));
 // 设置静态文件目录
 app.use(serveStatic('public'));
+// 使用会话
+app.use(cookieParser());
+app.use(session({
+    secret: 'imooc',
+    resave: false,
+    saveUninitialized: true,
+    store: new mongoStore({
+        url: dburl,
+        collection: 'session'
+    })
+}));
 // 设置一个全局的函数moment用于格式化日期
 app.locals.moment = require('moment');
 // 监听端口
@@ -36,6 +51,9 @@ console.log('movie is running at port ' + port);
 
 // 首页
 app.get('/', function (req, res) {
+    console.log('session', req.session.user);
+    // 将会话信息保存为全局可用的变量
+    app.locals.user = req.session.user;
     Movie.fetch(function (err, movies) {
         if (err) {
             console.log(err);
@@ -109,12 +127,19 @@ app.post('/user/signin', function (req, res) {
             console.log('isMatch', isMatch);
             if (isMatch) {
                 console.log('Password is correct');
+                req.session.user = user;
                 return res.redirect('/');
             } else {
                 console.log('Password is incorrect');
             }
         });
     });
+});
+
+// 登出
+app.get('/logout', function (req, res) {
+    delete req.session.user;  // 删除会话信息
+    res.redirect('/');
 });
 
 // 用户列表页

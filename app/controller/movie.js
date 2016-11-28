@@ -3,16 +3,25 @@
  */
 
 var Movie = require('../models/movie');
+var Comment = require('../models/comment');
 var _ = require('underscore');
 
 // 详情页
 exports.detail = function (req, res) {
     var id = req.params.id;
     Movie.findById(id, function (err, movie) {
-        res.render('detail', {
-            title: movie.title,
-            movie: movie
-        });
+        // 获取对应电影的评论可以用promise重写，也可以在前端再发送一个异步请求获取
+        Comment.find({movie: id})
+            .populate('from', 'name')
+            .populate('reply.from reply.to', 'name')
+            .exec(function (err, comments) {
+                console.log('comments', comments);
+                res.render('detail', {
+                    title: movie.title,
+                    movie: movie,
+                    comments: comments
+                });
+            });
     });
 };
 

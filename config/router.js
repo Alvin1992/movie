@@ -5,6 +5,7 @@
 var Index = require('../app/controller/index');
 var User = require('../app/controller/user');
 var Movie = require('../app/controller/movie');
+var Comment = require('../app/controller/comment');
 
 
 module.exports = function (app) {
@@ -34,4 +35,7 @@ module.exports = function (app) {
     app.post('/admin/movie/new', User.signinRequired, User.adminRequired, Movie.save);  // 后台录入的接口
     app.get('/admin/list', User.signinRequired, User.adminRequired, Movie.list);  // 电影列表页
     app.delete('/admin/list', User.signinRequired, User.adminRequired, Movie.del);  // 删除接口
+
+    // Comment
+    app.post('/user/comment', User.signinRequired, Comment.save);
 };

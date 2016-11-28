@@ -21,7 +21,7 @@ var dburl = 'mongodb://localhost/movie';
 mongoose.connect(dburl);
 
 // 视图路径
-app.set('views', './views/pages');
+app.set('views', './app/views/pages');
 // 模板引擎
 app.set('view engine', 'jade');
 // 将表单的字段解析为json

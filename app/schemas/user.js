@@ -12,6 +12,10 @@ var UserSchema = new mongoose.Schema({
         type: String
     },
     password: String,
+    role: {  // 用户权限
+        type: Number,
+        default: 0
+    },
     meta: {
         createAt: {
             type: Date,

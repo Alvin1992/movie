@@ -6,6 +6,7 @@ var Index = require('../app/controller/index');
 var User = require('../app/controller/user');
 var Movie = require('../app/controller/movie');
 var Comment = require('../app/controller/comment');
+var Category = require('../app/controller/category');
 
 
 module.exports = function (app) {
@@ -37,5 +38,13 @@ module.exports = function (app) {
     app.delete('/admin/list', User.signinRequired, User.adminRequired, Movie.del);  // 删除接口
 
     // Comment
-    app.post('/user/comment', User.signinRequired, Comment.save);
+    app.post('/user/comment', User.signinRequired, Comment.save);  // 评论接口
+
+   // category
+    app.get('/admin/category/new', User.signinRequired, User.adminRequired, Category.new);  // 分类录入页
+    app.post('/admin/category', User.signinRequired, User.adminRequired, Category.save);  // 分类保存的接口
+    app.get('/admin/category/list', User.signinRequired, User.adminRequired, Category.list);  // 分类列表页
+
+   // results
+    app.get('/results', Index.search); // 分类搜索页面
 };

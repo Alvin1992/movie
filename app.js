@@ -46,7 +46,8 @@ app.locals.moment = require('moment');
 app.listen(port);
 
 // 开发环境在控制台输出信息
-if ('development' === app.get('env')) {
+var env = process.env.NODE_ENV || 'development';
+if ('development' === env) {
     app.set('showStackError', true);
     app.use(morgan(':method :url :status :response-time ms'));
     app.locals.pretty = true;

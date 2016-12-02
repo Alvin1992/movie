@@ -5,11 +5,17 @@
 var Movie = require('../models/movie');
 var Comment = require('../models/comment');
 var Category = require('../models/category');
+var multer = require('../util/multerUtil');
 var _ = require('underscore');
 
 // 详情页
 exports.detail = function (req, res) {
     var id = req.params.id;
+    Movie.update({_id: id}, {$inc: {pv:1}}, function (err) {
+        if (err) {
+            console.log(err);
+        }
+    });
     Movie.findById(id, function (err, movie) {
         // 获取对应电影的评论可以用promise重写，也可以在前端再发送一个异步请求获取
         Comment.find({movie: id})
@@ -61,11 +67,29 @@ exports.update = function (req, res) {
     }
 };
 
+// 存储海报
+exports.savePoster = function (req, res, next) {
+    var upload = multer.single('uploadPoster');
+    upload(req, res, function (err) {
+        if (err) {
+            return console.log(err);
+        }
+        req.poster = req.file.filename;
+        next();
+    })
+
+};
+
 // 后台录入的接口
 exports.save = function (req, res) {
     var id = req.body.movie._id;
     var movieObj = req.body.movie;
     var _movie;
+
+    if (req.poster) {
+        movieObj.poster = req.poster;
+    }
+
     if (id) {
         // 更新数据
         Movie.findById(id, function (err, movie) {

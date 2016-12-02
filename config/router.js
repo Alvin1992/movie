@@ -33,7 +33,7 @@ module.exports = function (app) {
     app.get('/movie/:id', Movie.detail);  // 详情页
     app.get('/admin/movie', User.signinRequired, User.adminRequired, Movie.new);  // 后台录入页面
     app.get('/admin/update/:id', User.signinRequired, User.adminRequired, Movie.update);  // 更新页
-    app.post('/admin/movie/new', User.signinRequired, User.adminRequired, Movie.save);  // 后台录入的接口
+    app.post('/admin/movie/new', User.signinRequired, User.adminRequired, Movie.savePoster, Movie.save);  // 后台录入的接口
     app.get('/admin/list', User.signinRequired, User.adminRequired, Movie.list);  // 电影列表页
     app.delete('/admin/list', User.signinRequired, User.adminRequired, Movie.del);  // 删除接口
 

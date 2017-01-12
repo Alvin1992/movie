@@ -74,7 +74,9 @@ exports.savePoster = function (req, res, next) {
         if (err) {
             return console.log(err);
         }
-        req.poster = req.file.filename;
+        if (req.file) {
+            req.poster = req.file.filename;
+        }
         next();
     })
 
